@@ -4,7 +4,7 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"start": "node -r esm index.js"
+		"start": "nodemon --ignore ./node_modules --ignore ../easy-oauth2/node_modules --watch ./ --watch ../easy-oauth2 -r esm index.js"
 	},
 	"author": "",
 	"license": "ISC",
@@ -18,6 +18,8 @@
 	"dependencies": {
 		"easy-oauth2": "file:../easy-oauth2",
 		"esm": "^3.2.25",
-		"express": "^4.17.1"
+		"express": "^4.17.1",
+		"mustache-express": "^1.2.8",
+		"nodemon": "^1.19.2"
 	}
 }
