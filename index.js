@@ -26,17 +26,7 @@ let users = [
 		username: 'User Gui'
 	}
 ]
-const applications = [
-	{
-		name: 'New Used Media',
-		website: 'www.newusedmedia.com',
-		logo: 'https://dev.newusedmedia.com/static/media/logo_white.e0ee2117.png',
-		redirectURI: 'http://localhost:2000/auth/smash/callback',
-		devUserId: 'dev123',
-		clientID: 'smash_client_id_2338f67542fe119d01c5',
-		clientSecret: 'smash_client_secret_944c07d5f5246036c4a2'
-	}
-]
+const applications = []
 
 const authorizationCodes = []
 const accessTokens = []
@@ -83,10 +73,22 @@ easyInstance.getUser = async function(userId) {
 	return users.find(x => x.id === userId)
 }
 
+easyInstance.getAccessTokenByRefreshToken = async function(refreshToken) {
+	return accessTokens.find(x => x.refreshToken === refreshToken)
+}
+
 easyInstance.initViews()
 
 let serverInstance = server.createServer(app)
 
 serverInstance.listen(3000, () => {
 	console.log('listening')
+})
+
+easyInstance.registerApplication({
+	name: 'New Used Media',
+	website: 'www.newusedmedia.com',
+	logo: 'https://dev.newusedmedia.com/static/media/logo_white.e0ee2117.png',
+	redirectURI: 'http://localhost:2000/auth/smash/callback',
+	devUserId: 'dev123'
 })
