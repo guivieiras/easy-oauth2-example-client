@@ -3,6 +3,7 @@ import express from 'express'
 import server from 'http'
 import mustacheExpress from 'mustache-express'
 import bodyParser from 'body-parser'
+import bcrypt from 'bcryptjs'
 
 const app = express()
 
@@ -17,13 +18,15 @@ let easyInstance = new easy(app)
 let devUsers = [
 	{
 		id: 'dev123',
-		username: 'Dev Gui'
+		username: 'Dev Gui',
+		password: bcrypt.hash('abc123', 10)
 	}
 ]
 let users = [
 	{
 		id: 'user123',
-		username: 'User Gui'
+		username: 'User Gui',
+		password: bcrypt.hash('abc123', 10)
 	}
 ]
 const applications = []
@@ -75,6 +78,11 @@ easyInstance.getUser = async function(userId) {
 
 easyInstance.getAccessTokenByRefreshToken = async function(refreshToken) {
 	return accessTokens.find(x => x.refreshToken === refreshToken)
+}
+
+easyInstance.verifyUsernameAndPassword = async function(username, password) {
+	let user = users.find(x => x.username === username)
+	return bcrypt.compare(password, user.password)
 }
 
 easyInstance.initViews()
