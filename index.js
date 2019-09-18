@@ -34,16 +34,7 @@ const applications = []
 const authorizationCodes = []
 const accessTokens = []
 
-easyInstance.saveApplication = async function({
-	name,
-	website,
-	logo,
-	redirectURI,
-	devUserId,
-	clientId,
-	clientSecret,
-	clientType
-}) {
+async function saveApplication({ name, website, logo, redirectURI, devUserId, clientId, clientSecret, clientType }) {
 	applications.push({ name, website, logo, redirectURI, devUserId, clientId, clientSecret, clientType })
 }
 
@@ -109,17 +100,28 @@ easyInstance.revokeAuthorizationCode = async function(clientId, code) {
 
 easyInstance.initViews()
 
+app.get('/register-application', registerApplicationHandler)
+
+async function registerApplicationHandler(req, res, next) {
+	//TODO Need to be authenticated
+	let { name, logo, redirectURI, userId, website, clientType } = req.body
+	await this.registerApplication({ name, logo, redirectURI, userId, website, clientType })
+	res.send('Success!')
+}
+
 let serverInstance = server.createServer(app)
 
 serverInstance.listen(3000, () => {
 	console.log('listening')
 })
 
-easyInstance.registerApplication({
+saveApplication({
 	name: 'New Used Media',
 	website: 'www.newusedmedia.com',
 	logo: 'https://dev.newusedmedia.com/static/media/logo_white.e0ee2117.png',
 	redirectURI: 'http://localhost:2000/auth/smash/callback',
 	devUserId: 'dev123',
-	clientType: 'confidential'
+	clientType: 'confidential',
+	clientId: 'smash_client_id',
+	clientSecret: 'smash_client_secret'
 })
