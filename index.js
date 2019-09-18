@@ -34,12 +34,21 @@ const applications = []
 const authorizationCodes = []
 const accessTokens = []
 
-easyInstance.saveApplication = async function({ name, website, logo, redirectURI, devUserId, clientID, clientSecret }) {
-	applications.push({ name, website, logo, redirectURI, devUserId, clientID, clientSecret })
+easyInstance.saveApplication = async function({
+	name,
+	website,
+	logo,
+	redirectURI,
+	devUserId,
+	clientId,
+	clientSecret,
+	clientType
+}) {
+	applications.push({ name, website, logo, redirectURI, devUserId, clientId, clientSecret, clientType })
 }
 
-easyInstance.getApplication = async function(clientID) {
-	return applications.find(x => x.clientID === clientID)
+easyInstance.getApplication = async function(clientId) {
+	return applications.find(x => x.clientId === clientId)
 }
 
 easyInstance.saveAccessToken = async function({
@@ -76,13 +85,21 @@ easyInstance.getUser = async function(userId) {
 	return users.find(x => x.id === userId)
 }
 
-easyInstance.getAccessTokenByRefreshToken = async function(refreshToken) {
-	return accessTokens.find(x => x.refreshToken === refreshToken)
+easyInstance.getAccessTokenByRefreshToken = async function(clientId, refreshToken) {
+	return accessTokens.find(
+		x => x.refreshToken === refreshToken && x.clientId === clientId && x.refreshToken !== easy.INVALID_REFRESH
+	)
+}
+
+easyInstance.invalidateRefreshToken = async function(clientId, refreshToken) {
+	let accessToken = await easyInstance.getAccessTokenByRefreshToken(clientId, refreshToken)
+	accessToken.refreshToken = easy.INVALID_REFRESH
 }
 
 easyInstance.verifyUsernameAndPassword = async function(username, password) {
 	let user = users.find(x => x.username === username)
-	return bcrypt.compare(password, user.password)
+	let valid = bcrypt.compare(password, user.password)
+	return valid ? user.id : undefined
 }
 
 easyInstance.initViews()
