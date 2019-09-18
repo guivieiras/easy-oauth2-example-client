@@ -69,8 +69,8 @@ easyInstance.saveAuthorizationCode = async function({ code, clientId, userId, sc
 	authorizationCodes.push({ code, clientId, userId, scope })
 }
 
-easyInstance.getAuthorizationCode = async function(code) {
-	return authorizationCodes.find(x => x.code === code)
+easyInstance.getAuthorizationCode = async function(clientId, code) {
+	return authorizationCodes.find(x => x.code === code && x.clientId === clientId && x.code !== easy.REVOKED_TOKEN)
 }
 
 easyInstance.renderAuthorizationView = async function(req, res, next) {
@@ -87,19 +87,24 @@ easyInstance.getUser = async function(userId) {
 
 easyInstance.getAccessTokenByRefreshToken = async function(clientId, refreshToken) {
 	return accessTokens.find(
-		x => x.refreshToken === refreshToken && x.clientId === clientId && x.refreshToken !== easy.INVALID_REFRESH
+		x => x.refreshToken === refreshToken && x.clientId === clientId && x.refreshToken !== easy.REVOKED_TOKEN
 	)
 }
 
-easyInstance.invalidateRefreshToken = async function(clientId, refreshToken) {
+easyInstance.revokeRefreshToken = async function(clientId, refreshToken) {
 	let accessToken = await easyInstance.getAccessTokenByRefreshToken(clientId, refreshToken)
-	accessToken.refreshToken = easy.INVALID_REFRESH
+	accessToken.refreshToken = easy.REVOKED_TOKEN
 }
 
 easyInstance.verifyUsernameAndPassword = async function(username, password) {
 	let user = users.find(x => x.username === username)
 	let valid = bcrypt.compare(password, user.password)
 	return valid ? user.id : undefined
+}
+
+easyInstance.revokeAuthorizationCode = async function(clientId, code) {
+	let authorizationCode = await easyInstance.getAuthorizationCode(clientId, code)
+	authorizationCode.code = easy.REVOKED_TOKEN
 }
 
 easyInstance.initViews()
@@ -115,5 +120,6 @@ easyInstance.registerApplication({
 	website: 'www.newusedmedia.com',
 	logo: 'https://dev.newusedmedia.com/static/media/logo_white.e0ee2117.png',
 	redirectURI: 'http://localhost:2000/auth/smash/callback',
-	devUserId: 'dev123'
+	devUserId: 'dev123',
+	clientType: 'confidential'
 })

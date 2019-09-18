@@ -11,7 +11,9 @@
 		"prettier/prettier": ["error"],
 		"semi": [2, "never"],
 		"no-tabs": "off",
-		"quotes": [2, "single"]
+		"quotes": [2, "single"],
+		"no-undef": "error",
+		"no-return-await": "error"
 	},
 	"extends": ["prettier"],
 	"plugins": ["prettier"]
