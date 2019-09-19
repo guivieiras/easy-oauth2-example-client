@@ -4,7 +4,7 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"start": "nodemon --ignore ./node_modules --ignore ../easy-oauth2/node_modules --watch ./ --watch ../easy-oauth2 -r esm index.js"
+		"start": "nodemon --ignore ./node_modules --watch ./ -e js,mst -r esm index.js"
 	},
 	"author": "",
 	"license": "ISC",
@@ -19,7 +19,6 @@
 	"dependencies": {
 		"bcryptjs": "^2.4.3",
 		"body-parser": "^1.19.0",
-		"easy-oauth2": "file:../easy-oauth2",
 		"esm": "^3.2.25",
 		"express": "^4.17.1",
 		"mustache-express": "^1.2.8"

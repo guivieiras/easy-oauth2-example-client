@@ -1,0 +1,35 @@
+<html>
+	<body>
+		<script>
+			let client_id = '{{client_id}}'
+			let scope = '{{scope}}'
+			let state = '{{state}}'
+			let response_type = '{{response_type}}'
+
+			function batata() {
+				window.location.href =
+					'http://localhost:3000/authorize-frontend?' + serialize({ client_id, scope, state, response_type })
+			}
+
+			function serialize(obj) {
+				var str = []
+				for (var p in obj) {
+					if (obj.hasOwnProperty(p)) {
+						str.push(encodeURIComponent(p) + '=' + encodeURIComponent(obj[p]))
+					}
+				}
+				return str.join('&')
+			}
+		</script>
+
+		<button onclick="batata()">Login with smash</button>
+		<style>
+			form div {
+				margin: 10px;
+			}
+			label {
+				margin-right: 5px;
+			}
+		</style>
+	</body>
+</html>
